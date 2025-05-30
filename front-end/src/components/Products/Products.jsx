@@ -28,10 +28,10 @@ const Products = () => {
 
     const fetchWishlist = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/wishlist/view', {
+        const res = await fetch("http://localhost:3000/api/wishlist/view", {
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
         if (res.ok) {
@@ -40,7 +40,7 @@ const Products = () => {
           setWishlistIds(ids);
         }
       } catch (err) {
-        console.error('Lỗi khi lấy wishlist:', err);
+        console.error("Lỗi khi lấy wishlist:", err);
       }
     };
 
@@ -51,69 +51,69 @@ const Products = () => {
   const handleToggleWishlist = async (productId) => {
     try {
       if (wishlistIds.includes(productId)) {
-        const res = await fetch('http://localhost:3000/api/wishlist/remove', {
-          method: 'DELETE',
+        const res = await fetch("http://localhost:3000/api/wishlist/remove", {
+          method: "DELETE",
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({ productId }),
         });
         if (res.ok) {
-          alert('Đã xóa khỏi danh sách yêu thích!');
+          alert("Đã xóa khỏi danh sách yêu thích!");
           setWishlistIds((prev) => prev.filter((id) => id !== productId));
         } else {
           const msg = await res.text();
-          alert('Xóa thất bại: ' + msg);
+          alert("Xóa thất bại: " + msg);
         }
       } else {
-        const res = await fetch('http://localhost:3000/api/wishlist/add', {
-          method: 'POST',
+        const res = await fetch("http://localhost:3000/api/wishlist/add", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({ productId }),
         });
         if (res.ok) {
-          alert('Đã thêm vào danh sách yêu thích!');
+          alert("Đã thêm vào danh sách yêu thích!");
           setWishlistIds((prev) => [...new Set([...prev, productId])]);
         } else {
           const msg = await res.text();
-          alert('Thêm thất bại: ' + msg);
+          alert("Thêm thất bại: " + msg);
         }
       }
     } catch (err) {
-      console.error('Lỗi khi thay đổi wishlist:', err);
-      alert('Lỗi hệ thống');
+      console.error("Lỗi khi thay đổi wishlist:", err);
+      alert("Lỗi hệ thống");
     }
   };
 
   const handleAddToCart = async (productId) => {
     try {
-      const res = await fetch('http://localhost:3000/api/cart/add', {
-        method: 'POST',
+      const res = await fetch("http://localhost:3000/api/cart/add", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({ productId }),
       });
 
       const data = await res.text();
       if (res.ok) {
-        alert('Đã thêm vào giỏ hàng!');
+        alert("Đã thêm vào giỏ hàng!");
       } else {
-        alert('Thêm thất bại: ' + data);
+        alert("Thêm thất bại: " + data);
       }
     } catch (err) {
-      console.error('Lỗi khi thêm vào giỏ hàng:', err);
-      alert('Lỗi hệ thống');
+      console.error("Lỗi khi thêm vào giỏ hàng:", err);
+      alert("Lỗi hệ thống");
     }
   };
 
   const handleViewDetail = (productId) => {
-    navigate(`/product/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   if (loading)
@@ -191,7 +191,9 @@ const Products = () => {
 
               {/* Hiển thị giá */}
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-red-600 font-semibold">${discountedPrice}</span>
+                <span className="text-red-600 font-semibold">
+                  ${discountedPrice}
+                </span>
                 {item.originalPrice && item.originalPrice > discountedPrice && (
                   <span className="text-gray-400 line-through text-sm">
                     ${item.originalPrice}

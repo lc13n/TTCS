@@ -15,6 +15,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import OrdersPage from "./pages/OrdersPage";
+import CategoryPage from './pages/CategoryPage';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/categories/:slug" element={<CategoryPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

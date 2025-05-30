@@ -143,7 +143,7 @@ const FlashSale = () => {
   };
 
   const handleViewDetail = (productId) => {
-    navigate(`/product/${productId}`);
+    navigate(`/products/${productId}`);
   };
 
   const renderProductCard = (product) => {

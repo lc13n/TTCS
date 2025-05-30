@@ -12,35 +12,35 @@ const Banner = () => {
             description: "Up to 10% off Voucher",
             image: IphoneBanner,
             logo: AppleLogo,
-            path: "/shop-now"
+            path: "/products"
         },
         {
             title: "iPhone 14 Pro",
             description: "Special Launch Offer",
             image: IphoneBanner,
             logo: AppleLogo,
-            path: "/shop-now"
+            path: "/products"
         },
         {
             title: "iPhone 14 Pro Max",
             description: "New Arrival",
             image: IphoneBanner,
             logo: AppleLogo,
-            path: "/shop-now"
+            path: "/products"
         },
         {
             title: "iPhone Special",
             description: "Limited Time Offer",
             image: IphoneBanner,
             logo: AppleLogo,
-            path: "/shop-now"
+            path: "/products"
         },
         {
             title: "iPhone Deals",
             description: "Best Price Guarantee",
             image: IphoneBanner,
             logo: AppleLogo,
-            path: "/shop-now"
+            path: "/products"
         }
     ];
 
@@ -49,9 +49,9 @@ const Banner = () => {
             setCurrentSlide((prevSlide) =>
                 prevSlide === banners.length - 1 ? 0 : prevSlide + 1
             );
-        }, 3000); // Chuyển slide sau mỗi 3 giây
+        }, 3000); 
 
-        return () => clearInterval(timer); // Cleanup khi component unmount
+        return () => clearInterval(timer);
     }, []);
 
     const goToSlide = (index) => {
