@@ -8,7 +8,7 @@ const Categories = () => {
     { name: "Computers", path: "/categories/computer" },
     { name: "SmartWatch", path: "/categories/smartwatch" },
     { name: "Camera", path: "/categories/camera" },
-    { name: "HeadPhones", path: "/categories/headphone" },
+    { name: "HeadPhones", path: "/categories/headphones" },
     { name: "Gaming", path: "/categories/gaming" },
     { name: "Flash Sale", path: "/flash-sale" },
     { name: "Trending Now", path: "/trending" },
