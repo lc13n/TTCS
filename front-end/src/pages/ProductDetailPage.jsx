@@ -204,7 +204,7 @@ const ProductDetailPage = () => {
 
           {/* Màu sắc */}
           <div className="space-y-4">
-            <div>
+            {/* <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2">Colours:</h3>
               <div className="flex space-x-2">
                 {product.colors?.map((color) => (
@@ -221,10 +221,10 @@ const ProductDetailPage = () => {
                   />
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Size */}
-            <div>
+            {/* <div>
               <h3 className="text-sm font-medium text-gray-900 mb-2">Size:</h3>
               <div className="flex space-x-2">
                 {product.sizes?.map((size) => (
@@ -241,7 +241,7 @@ const ProductDetailPage = () => {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Wishlist & Quantity */}
             <div className="flex items-center space-x-4">

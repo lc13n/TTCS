@@ -8,7 +8,7 @@ const categories = [
   { id: 2, name: 'Computers', slug: 'computer', icon: <FaDesktop size={24} /> },
   { id: 3, name: 'SmartWatch', slug: 'smartwatch', icon: <IoWatchOutline size={24} /> },
   { id: 4, name: 'Camera', slug: 'camera', icon: <IoCamera size={24} /> },
-  { id: 5, name: 'HeadPhones', slug: 'headphone', icon: <FaHeadphones size={24} /> },
+  { id: 5, name: 'HeadPhones', slug: 'headphones', icon: <FaHeadphones size={24} /> },
   { id: 6, name: 'Gaming', slug: 'gaming', icon: <FaGamepad size={24} /> },
 ];
 
@@ -38,7 +38,7 @@ const BrowseCategories = () => {
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
         {categories.map((category) => (
           <Link
-            to={`/${category.slug}`}
+            to={`/categories/${category.slug}`}
             key={category.id}
             className="flex flex-col items-center justify-center p-6 border rounded-lg hover:border-red-500 hover:text-red-500 transition-colors"
           >

@@ -42,9 +42,9 @@ const HomePage = () => {
                     </div>
 
                     {/* Best Selling Section */}
-                    <div className="my-16">
+                    {/* <div className="my-16">
                         <BestSelling />
-                    </div>
+                    </div> */}
 
                     {/* Promo Banner Section */}
                     <div className="my-16">
