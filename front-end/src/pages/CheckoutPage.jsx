@@ -100,7 +100,6 @@ const CheckoutPage = () => {
 
     const { fullName, street, district, city, phone, email } = formData;
 
-    // Kiểm tra thông tin
     const missingFields = [];
     if (!fullName) missingFields.push("Full Name");
     if (!street) missingFields.push("Street");
@@ -113,7 +112,6 @@ const CheckoutPage = () => {
       alert("Vui lòng nhập: " + missingFields.join(", "));
       return;
     }
-
 
     if (paymentMethod !== "cash") {
       alert("Phương thức thanh toán hiện tại chỉ hỗ trợ Cash on delivery");
@@ -142,7 +140,13 @@ const CheckoutPage = () => {
         billingInfo: { fullName, street, district, city, phone, email },
       };
 
+      // 1. Gửi đơn hàng
       await axios.post("http://localhost:3000/api/orders/create", orderData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // 2. Xoá giỏ hàng sau khi đặt hàng thành công
+      await axios.delete("http://localhost:3000/api/cart/clear", {
         headers: { Authorization: `Bearer ${token}` },
       });
 

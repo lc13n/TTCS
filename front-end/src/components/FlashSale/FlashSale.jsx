@@ -19,9 +19,7 @@ const FlashSale = () => {
   useEffect(() => {
     const fetchFlashSales = async () => {
       try {
-        const res = await fetch(
-          "http://localhost:3000/api/products/flash-sales"
-        );
+        const res = await fetch("http://localhost:3000/api/products/flash-sales");
         const data = await res.json();
         setProducts(data);
       } catch (err) {
@@ -31,15 +29,32 @@ const FlashSale = () => {
 
     const fetchWishlist = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("Không có token, bỏ qua gọi API wishlist");
+          return;
+        }
+
         const res = await fetch("http://localhost:3000/api/wishlist/view", {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         });
-        const data = await res.json();
-        const ids = data?.products?.map((p) => p.productId._id) || [];
-        setWishlistIds(ids);
+
+        const text = await res.text();
+
+        try {
+          const data = JSON.parse(text);
+          const ids = data?.products?.map((p) => p.productId._id) || [];
+          setWishlistIds(ids);
+        } catch (parseErr) {
+          console.error("Phản hồi không hợp lệ:", text);
+          if (text.includes("Invalid token")) {
+            alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+            // Optional: navigate("/login");
+          }
+        }
       } catch (err) {
         console.error("Lỗi khi lấy wishlist:", err);
       }
@@ -115,13 +130,18 @@ const FlashSale = () => {
 
   const handleToggleWishlist = async (productId) => {
     try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Bạn cần đăng nhập để sử dụng wishlist.");
+        return;
+      }
+
       if (wishlistIds.includes(productId)) {
-        // Xóa khỏi wishlist
         const res = await fetch("http://localhost:3000/api/wishlist/remove", {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ productId }),
         });
@@ -133,12 +153,11 @@ const FlashSale = () => {
           alert("Xóa thất bại: " + msg);
         }
       } else {
-        // Thêm vào wishlist
         const res = await fetch("http://localhost:3000/api/wishlist/add", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({ productId }),
         });
@@ -183,9 +202,7 @@ const FlashSale = () => {
             className="p-2 bg-white rounded-full hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
           >
             <FaHeart
-              className={
-                wishlistIds.includes(product._id) ? "text-pink-500" : ""
-              }
+              className={wishlistIds.includes(product._id) ? "text-pink-500" : ""}
             />
           </button>
           <button
@@ -197,7 +214,7 @@ const FlashSale = () => {
         </div>
         <div className="mb-4">
           <img
-            src={product.image}
+            src={product.image || "/fallback.jpg"}  // fallback ảnh nếu image rỗng
             alt={product.name}
             className="w-full h-48 object-contain"
           />
