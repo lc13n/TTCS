@@ -5,7 +5,7 @@ const Order = require('../models/Order');
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { products, total } = req.body;
+    const { products, total, billingInfo } = req.body;
 
     if (!products || !products.length) {
       return res.status(400).json({ error: 'Danh sách sản phẩm không được để trống' });
@@ -15,6 +15,7 @@ exports.createOrder = async (req, res) => {
       user: userId,
       products,
       total,
+      billingInfo,
       status: 'Pending',
     });
 
@@ -26,6 +27,7 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ error: 'Lỗi server' });
   }
 };
+
 
 // Lấy danh sách đơn hàng của user
 exports.getMyOrders = async (req, res) => {
