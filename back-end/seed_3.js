@@ -9,7 +9,7 @@ const Category = require("./models/Category");
 mongoose
   .connect(
     process.env.MONGO_URI ||
-      "mongodb+srv://kien:hehe@shopping-app.nfn3dio.mongodb.net/?retryWrites=true&w=majority&appName=shopping-app",
+    "mongodb+srv://kien:hehe@shopping-app.nfn3dio.mongodb.net/?retryWrites=true&w=majority&appName=shopping-app",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -166,7 +166,7 @@ const seedNewProducts = async () => {
         rating: 4.8,
       },
     ];
-        const computers = [
+    const computers = [
       {
         name: "MacBook Pro 14 M3 Pro",
         price: 1999,

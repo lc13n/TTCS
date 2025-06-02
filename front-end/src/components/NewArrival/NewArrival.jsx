@@ -7,14 +7,14 @@ const collections = [
     description:
       "Latest smartphones from top brands like Apple, Samsung, and more.",
     image:
-      "https://www.apple.com/newsroom/images/2024/09/apple-debuts-iphone-16-pro-and-iphone-16-pro-max/article/Apple-iPhone-16-Pro-finish-lineup-240909_big.jpg.large.jpg",
+      "https://www.apple.com/newsroom/images/2024/09/apple-debuts-iphone-16-pro-and-iphone-16-pro-max/article/Apple-iPhone-16-Pro-hero-geo-240909_inline.jpg.large.jpg",
     buttonText: "Shop Now",
   },
   {
     id: 2,
     title: "Computers",
     description: "Explore powerful laptops, desktops, and accessories.",
-    image: "",
+    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
     buttonText: "Shop Now",
   },
   {
@@ -22,14 +22,14 @@ const collections = [
     title: "SmartWatch",
     description:
       "Smart wearables to track your health and connect with the world.",
-    image: "",
+    image: "https://cdnv2.tgdd.vn/mwg-static/common/News/1569977/apple-watch-series-10-co-gi-moi-tinh-nang-noi-bat-3.jpg",
     buttonText: "Shop Now",
   },
   {
     id: 4,
     title: "Camera",
     description: "High-quality cameras for creators and professionals.",
-    image: "",
+    image: "https://photographyproject.uk/wp-content/uploads/2024/01/06-3416-post/canon-camera-e1704554602159.jpg",
     buttonText: "Shop Now",
   },
 ];
@@ -59,12 +59,12 @@ const NewArrival = () => {
                 {collections[0].buttonText}
               </button>
             </div>
+            <img
+              src={collections[0].image}
+              alt={collections[0].title}
+              className="w-full h-[360px] object-contain"
+            />
           </div>
-          <img
-            src={collections[0].image}
-            alt={collections[0].title}
-            className="w-full h-[280px] object-cover"
-          />
         </div>
 
         {/* Right column */}
@@ -83,12 +83,12 @@ const NewArrival = () => {
               <button className="w-fit px-4 py-2 bg-transparent border border-white text-white rounded-md hover:bg-white hover:text-black transition-colors">
                 {collections[1].buttonText}
               </button>
+              <img
+                src={collections[1].image}
+                alt={collections[1].title}
+                className="w-full h-[130px] object-cover"
+              />
             </div>
-            <img
-              src={collections[1].image}
-              alt={collections[1].title}
-              className="w-full h-[130px] object-cover"
-            />
           </div>
 
           {/* SmartWatch & Camera */}
