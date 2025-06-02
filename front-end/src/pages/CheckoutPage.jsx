@@ -113,11 +113,6 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (paymentMethod !== "cash") {
-      alert("Phương thức thanh toán hiện tại chỉ hỗ trợ Cash on delivery");
-      return;
-    }
-
     const token = localStorage.getItem("token");
     if (!token) {
       alert("Bạn cần đăng nhập để đặt hàng");
@@ -140,12 +135,28 @@ const CheckoutPage = () => {
         billingInfo: { fullName, street, district, city, phone, email },
       };
 
-      // 1. Gửi đơn hàng
-      await axios.post("http://localhost:3000/api/orders/create", orderData, {
+      // 1. Tạo đơn hàng
+      const orderRes = await axios.post("http://localhost:3000/api/orders/create", orderData, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      const orderId = orderRes.data.order._id;
 
-      // 2. Xoá giỏ hàng sau khi đặt hàng thành công
+      // 2. Nếu chọn MoMo, gọi API MoMo và chuyển hướng
+      if (paymentMethod === "momo") {
+        const momoRes = await axios.post(
+          "http://localhost:3000/api/payments/paymentWithMomo",
+          { orderId }
+        );
+        if (momoRes.data && momoRes.data.payUrl) {
+          window.location.href = momoRes.data.payUrl;
+          return;
+        } else {
+          alert("Không thể kết nối MoMo!");
+          return;
+        }
+      }
+
+      // 3. Nếu không phải MoMo, xử lý như cũ
       await axios.delete("http://localhost:3000/api/cart/clear", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -194,8 +205,8 @@ const CheckoutPage = () => {
                           field.name === "email"
                             ? "email"
                             : field.name === "phone"
-                            ? "tel"
-                            : "text"
+                              ? "tel"
+                              : "text"
                         }
                         name={field.name}
                         value={formData[field.name]}
@@ -255,38 +266,44 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="space-y-4 mt-6">
-                  {["bank", "cash"].map((method) => (
-                    <div key={method} className="flex items-center space-x-3">
+                  {[
+                    {
+                      id: "bank",
+                      label: (
+                        <div className="flex items-center justify-between w-full">
+                          <span>Bank</span>
+                          <div className="flex items-center gap-2 pl-5">
+                            <img src="/assets/images/visa.png" alt="Visa" className="h-4" />
+                            <img src="/assets/images/master-card.png" alt="Mastercard" className="h-5" />
+                          </div>
+                        </div>
+                      ),
+                    },
+                    {
+                      id: "cash",
+                      label: "Cash on delivery",
+                    },
+                    {
+                      id: "momo",
+                      label: (
+                        <div className="flex items-center justify-between w-full">
+                          <span>MoMo</span>
+                          <img src="https://developers.momo.vn/v3/img/logo.svg" alt="MoMo" className="h-6" />
+                        </div>
+                      ),
+                    },
+                  ].map((method) => (
+                    <div key={method.id} className="flex items-center space-x-3">
                       <input
                         type="radio"
-                        id={method}
+                        id={method.id}
                         name="payment"
-                        value={method}
-                        checked={paymentMethod === method}
+                        value={method.id}
+                        checked={paymentMethod === method.id}
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="h-4 w-4"
                       />
-                      <label htmlFor={method}>
-                        {method === "bank" ? (
-                          <div className="flex items-center justify-between w-full">
-                            <span>Bank</span>
-                            <div className="flex items-center gap-2 pl-5">
-                              <img
-                                src="/assets/images/visa.png"
-                                alt="Visa"
-                                className="h-4"
-                              />
-                              <img
-                                src="/assets/images/master-card.png"
-                                alt="Mastercard"
-                                className="h-5"
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          "Cash on delivery"
-                        )}
-                      </label>
+                      <label htmlFor={method.id}>{method.label}</label>
                     </div>
                   ))}
                 </div>
