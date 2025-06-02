@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
@@ -15,7 +14,6 @@ const CheckoutPage = () => {
     city: "",
     phone: "",
     email: "",
-    saveInfo: false,
   });
 
   const [cartItems, setCartItems] = useState([]);
@@ -62,15 +60,14 @@ const CheckoutPage = () => {
 
         const { firstName, lastName, email, phone, address } = res.data;
 
-        setFormData((prev) => ({
-          ...prev,
+        setFormData({
           fullName: `${firstName || ""} ${lastName || ""}`.trim(),
           street: address?.street || "",
           district: address?.district || "",
           city: address?.city || "",
           phone: phone || "",
           email: email || "",
-        }));
+        });
       } catch (err) {
         console.error("Lỗi khi lấy thông tin người dùng:", err);
       }
@@ -80,16 +77,15 @@ const CheckoutPage = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
-  const calculateDiscountedPrice = (price, flashSales) => {
-    return Math.round(price * (1 - (flashSales || 0) / 100));
-  };
+  const calculateDiscountedPrice = (price, flashSales) =>
+    Math.round(price * (1 - (flashSales || 0) / 100));
 
   const subtotal = cartItems.reduce((sum, item) => {
     const discounted = calculateDiscountedPrice(item.price, item.flashSales);
@@ -102,52 +98,59 @@ const CheckoutPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (paymentMethod === "cash") {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Bạn cần đăng nhập để đặt hàng");
-        return;
-      }
+    const { fullName, street, district, city, phone, email } = formData;
 
-      if (cartItems.length === 0) {
-        alert("Giỏ hàng của bạn đang trống");
-        return;
-      }
+    // Kiểm tra thông tin
+    const missingFields = [];
+    if (!fullName) missingFields.push("Full Name");
+    if (!street) missingFields.push("Street");
+    if (!district) missingFields.push("District");
+    if (!city) missingFields.push("City");
+    if (!phone) missingFields.push("Phone Number");
+    if (!email) missingFields.push("Email Address");
 
-      try {
-        const orderData = {
-          products: cartItems.map((item) => ({
-            product: item.id,
-            quantity: item.quantity,
-          })),
-          total,
-          paymentMethod,
-          billingInfo: {
-            fullName: formData.fullName,
-            street: formData.street,
-            district: formData.district,
-            city: formData.city,
-            phone: formData.phone,
-            email: formData.email,
-          },
-        };
+    if (missingFields.length > 0) {
+      alert("Vui lòng nhập: " + missingFields.join(", "));
+      return;
+    }
 
-        const res = await axios.post(
-          "http://localhost:3000/api/orders/create",
-          orderData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
 
-        alert("Đặt hàng thành công!");
-        navigate("/orders");
-      } catch (error) {
-        console.error("Lỗi khi tạo đơn hàng:", error);
-        alert("Đặt hàng thất bại. Vui lòng thử lại.");
-      }
-    } else {
+    if (paymentMethod !== "cash") {
       alert("Phương thức thanh toán hiện tại chỉ hỗ trợ Cash on delivery");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Bạn cần đăng nhập để đặt hàng");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      alert("Giỏ hàng của bạn đang trống");
+      return;
+    }
+
+    try {
+      const orderData = {
+        products: cartItems.map((item) => ({
+          product: item.id,
+          quantity: item.quantity,
+        })),
+        total,
+        paymentMethod,
+        billingInfo: { fullName, street, district, city, phone, email },
+      };
+
+      await axios.post("http://localhost:3000/api/orders/create", orderData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      alert("Đặt hàng thành công!");
+      navigate("/orders");
+    } catch (error) {
+      console.error("Lỗi khi tạo đơn hàng:", error);
+      alert("Đặt hàng thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -164,29 +167,20 @@ const CheckoutPage = () => {
             <span>/</span>
             <span className="text-gray-900">Checkout</span>
           </div>
-          {/* <div className="text-sm breadcrumbs mb-8">
-            <ul className="flex items-center space-x-2 text-gray-500">
-              <li>Account</li>
-              <li>My Account</li>
-              <li>Product</li>
-              <li>View Cart</li>
-              <li className="text-black">Checkout</li>
-            </ul>
-          </div> */}
 
           <h1 className="text-2xl font-bold mb-8">Billing Details</h1>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Billing Form */}
+            {/* Form Thông tin */}
             <div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 {[
-                  { label: "Full Name*", name: "fullName", required: true },
-                  { label: "Street*", name: "street", required: true },
-                  { label: "District*", name: "district", required: true },
-                  { label: "City*", name: "city", required: true },
-                  { label: "Phone Number*", name: "phone", required: true },
-                  { label: "Email Address*", name: "email", required: true },
+                  { label: "Full Name*", name: "fullName" },
+                  { label: "Street*", name: "street" },
+                  { label: "District*", name: "district" },
+                  { label: "City*", name: "city" },
+                  { label: "Phone Number*", name: "phone" },
+                  { label: "Email Address*", name: "email" },
                 ].map((field) => (
                   <div key={field.name}>
                     <label className="block text-sm font-medium mb-2">
@@ -202,29 +196,16 @@ const CheckoutPage = () => {
                         name={field.name}
                         value={formData[field.name]}
                         onChange={handleInputChange}
-                        required={field.required}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                        required
                       />
                     </label>
                   </div>
                 ))}
-{/* 
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="saveInfo"
-                    checked={formData.saveInfo}
-                    onChange={handleInputChange}
-                    className="h-4 w-4 text-primary border-gray-300 rounded"
-                  />
-                  <label className="ml-2 text-sm text-gray-600">
-                    Save this information for faster check-out next time
-                  </label>
-                </div> */}
               </form>
             </div>
 
-            {/* Order Summary */}
+            {/* Tóm tắt đơn hàng */}
             <div className="order-summary bg-gray-50 p-6 rounded-lg">
               <div className="space-y-4">
                 {cartItems.map((item) => {
@@ -287,12 +268,12 @@ const CheckoutPage = () => {
                             <span>Bank</span>
                             <div className="flex items-center gap-2 pl-5">
                               <img
-                                src="src/assets/images/visa.png"
+                                src="/assets/images/visa.png"
                                 alt="Visa"
                                 className="h-4"
                               />
                               <img
-                                src="src/assets/images/master-card.png"
+                                src="/assets/images/master-card.png"
                                 alt="Mastercard"
                                 className="h-5"
                               />
@@ -305,17 +286,6 @@ const CheckoutPage = () => {
                     </div>
                   ))}
                 </div>
-
-                {/* <div className="flex space-x-4 mt-6">
-                  <input
-                    type="text"
-                    placeholder="Coupon Code"
-                    className="flex-1 px-4 py-2 border rounded"
-                  />
-                  <button className="bg-red-500 text-white px-6 py-2 rounded">
-                    Apply Coupon
-                  </button>
-                </div> */}
 
                 <button
                   onClick={handleSubmit}

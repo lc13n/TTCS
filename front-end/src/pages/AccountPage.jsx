@@ -115,13 +115,10 @@ const AccountPage = () => {
             <h2 className="text-lg font-semibold mb-4">Manage My Account</h2>
             <div className="space-y-2">
               <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-4 py-2 rounded ${activeTab === 'profile' ? 'bg-red-500 text-white' : 'hover:bg-gray-100'}`}>My Profile</button>
-              <button onClick={() => setActiveTab('address')} className={`w-full text-left px-4 py-2 rounded ${activeTab === 'address' ? 'bg-red-500 text-white' : 'hover:bg-gray-100'}`}>Address Book</button>
-              <button onClick={() => setActiveTab('payment')} className={`w-full text-left px-4 py-2 rounded ${activeTab === 'payment' ? 'bg-red-500 text-white' : 'hover:bg-gray-100'}`}>My Payment Options</button>
             </div>
             <h2 className="text-lg font-semibold mt-8 mb-4">My Orders</h2>
             <div className="space-y-2">
-              <button onClick={() => setActiveTab('returns')} className={`w-full text-left px-4 py-2 rounded ${activeTab === 'returns' ? 'bg-red-500 text-white' : 'hover:bg-gray-100'}`}>My Returns</button>
-              <button onClick={() => setActiveTab('cancellations')} className={`w-full text-left px-4 py-2 rounded ${activeTab === 'cancellations' ? 'bg-red-500 text-white' : 'hover:bg-gray-100'}`}>My Cancellations</button>
+              <Link to="/orders" className="block px-4 py-2 rounded hover:bg-gray-100">View Wishlist</Link>
             </div>
             <h2 className="text-lg font-semibold mt-8 mb-4">My Wishlist</h2>
             <div className="space-y-2">
