@@ -8,66 +8,59 @@ const Category = require("./models/Category");
 const Product = require("./models/Product");
 
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/shopping", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(
+    process.env.MONGO_URI ||
+      "mongodb+srv://kien:hehe@shopping-app.nfn3dio.mongodb.net/?retryWrites=true&w=majority&appName=shopping-app",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection failed", err));
 
 const seedData = async () => {
   try {
-    // Admin user (only insert if not exists)
-    const existingAdmin = await User.findOne({ email: "dzkien2@gmail.com" });
-    if (!existingAdmin) {
-      const adminUser = new User({
-        username: "admin",
-        password:
-          "$2a$10$3FKZsWmjPPfSkY0jgCHMLeJhBbLCoWKT0OgyJnIyYD1k/nKZFuPLu",
-        email: "dzkien2@gmail.com",
-        role: "admin",
-      });
-      await adminUser.save();
-      console.log("Admin user created.");
-    } else {
-      console.log("Admin user already exists.");
-    }
+    await User.deleteMany({});
+    await Category.deleteMany({});
+    await Product.deleteMany({});
 
-    // Categories
-    const phone = await Category.findOneAndUpdate(
-      { name: "Phone" },
-      { name: "Phone" },
-      { upsert: true, new: true }
-    );
-    const computer = await Category.findOneAndUpdate(
-      { name: "Computer" },
-      { name: "Computer" },
-      { upsert: true, new: true }
-    );
+    const adminUser = new User({
+      username: "admin",
+      password: "$2a$10$3FKZsWmjPPfSkY0jgCHMLeJhBbLCoWKT0OgyJnIyYD1k/nKZFuPLu",
+      email: "dzkien2@gmail.com",
+      role: "admin",
+    });
+    await adminUser.save();
 
-    // Products to seed
-    const allProducts = [
-      {
-        name: "iPhone 14",
-        price: 999,
-        description: "Latest Apple smartphone",
-        category: phone._id,
-        image: "https://example.com/images/iphone14.jpg",
-        inStock: true,
-        flashSales: 10,
-        rating: 4.5,
-      },
-      {
-        name: "T-Shirt",
-        price: 19.99,
-        description: "100% Cotton T-shirt",
-        category: computer._id,
-        image: "https://example.com/images/tshirt.jpg",
-        inStock: true,
-        flashSales: 0,
-        rating: 4.0,
-      },
-      // Phones
+    const phone = new Category({ name: "Phone" });
+    const computer = new Category({ name: "Computer" });
+    await phone.save();
+    await computer.save();
+
+    const iphone = new Product({
+      name: "iPhone 14",
+      price: 999,
+      description: "Latest Apple smartphone",
+      category: phone._id,
+      image: "https://example.com/images/iphone14.jpg",
+      inStock: true,
+      flashSales: 10,
+      rating: 4.5,
+    });
+
+    const tshirt = new Product({
+      name: "T-Shirt",
+      price: 19.99,
+      description: "100% Cotton T-shirt",
+      category: computer._id,
+      image: "https://example.com/images/tshirt.jpg",
+      inStock: true,
+      flashSales: 0,
+      rating: 4.0,
+    });
+
+    const morePhones = [
       {
         name: "Samsung Galaxy S23",
         price: 899,
@@ -168,7 +161,9 @@ const seedData = async () => {
         flashSales: 4,
         rating: 4.3,
       },
-      // Computers
+    ];
+
+    const moreComputers = [
       {
         name: 'MacBook Pro 16"',
         price: 2399,
@@ -271,18 +266,12 @@ const seedData = async () => {
       },
     ];
 
-    // Insert only if product name doesn't exist
-    for (const product of allProducts) {
-      const exists = await Product.findOne({ name: product.name });
-      if (!exists) {
-        await Product.create(product);
-        console.log(`Inserted: ${product.name}`);
-      } else {
-        console.log(`Skipped (already exists): ${product.name}`);
-      }
-    }
+    await iphone.save();
+    await tshirt.save();
+    await Product.insertMany(morePhones);
+    await Product.insertMany(moreComputers);
 
-    console.log("Seeding completed successfully!");
+    console.log("Seed data inserted successfully!");
     process.exit();
   } catch (err) {
     console.error("Error seeding data:", err);

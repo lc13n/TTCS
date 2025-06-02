@@ -1,6 +1,6 @@
 const Product = require('../models/Product');
 const WishList = require('../models/WishList');
-const Cart = require('../models/Cart'); // ✅ Thêm dòng này
+const Cart = require('../models/Cart'); // 
 
 exports.viewWishList = async (req, res) => {
     const wishList = await WishList.findOne({ userId: req.user.id }).populate('products.productId');

@@ -16,7 +16,7 @@ const wishListRoutes = require('./routes/wishListRoutes');
 
 const app = express();
 
-// 🔥 Cho phép frontend ở localhost:5173 truy cập
+// Cho phép frontend ở localhost:5173 truy cập
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true // nếu bạn dùng cookie auth, còn không thì vẫn nên để true để sẵn
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// 🔗 Kết nối MongoDB
+// Kết nối MongoDB
 mongoose.connect('mongodb+srv://kien:hehe@shopping-app.nfn3dio.mongodb.net/?retryWrites=true&w=majority&appName=shopping-app', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -34,7 +34,7 @@ mongoose.connect('mongodb+srv://kien:hehe@shopping-app.nfn3dio.mongodb.net/?retr
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-// 🛣️ Routes
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
@@ -45,7 +45,7 @@ app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/wishlist', wishListRoutes);
 
-// 🚀 Khởi chạy server
+// Khởi chạy server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
