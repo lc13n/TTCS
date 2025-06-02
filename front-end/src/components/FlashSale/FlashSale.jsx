@@ -180,7 +180,7 @@ const FlashSale = () => {
         <div className="absolute top-3 right-3 flex flex-col gap-2">
           <button
             onClick={() => handleToggleWishlist(product._id)}
-            className="p-2 bg-white rounded-full hover:bg-red-500 hover:text-white transition-colors"
+            className="p-2 bg-white rounded-full hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
           >
             <FaHeart
               className={
@@ -190,7 +190,7 @@ const FlashSale = () => {
           </button>
           <button
             onClick={() => handleViewDetail(product._id)}
-            className="p-2 bg-white rounded-full hover:bg-red-500 hover:text-white transition-colors"
+            className="p-2 bg-white rounded-full hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
           >
             <FaEye />
           </button>
@@ -204,11 +204,16 @@ const FlashSale = () => {
         </div>
         <button
           onClick={() => handleAddToCart(product._id)}
-          className="w-full bg-black text-white py-2 rounded mb-4 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="w-full bg-black text-white py-2 rounded mb-4 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
         >
           Add To Cart
         </button>
-        <h4 className="font-medium mb-2">{product.name}</h4>
+        <h4
+          onClick={() => handleViewDetail(product._id)}
+          className="font-medium mb-2 cursor-pointer"
+        >
+          {product.name}
+        </h4>
         <div className="flex gap-2 mb-2">
           <span className="text-red-500">${discountedPrice}</span>
           <span className="text-gray-400 line-through">${product.price}</span>

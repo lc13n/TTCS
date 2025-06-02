@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCart = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
       try {
-        const res = await axios.get('http://localhost:3000/api/cart/view', {
+        const res = await axios.get("http://localhost:3000/api/cart/view", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         const fetchedItems =
           res.data?.products?.map((item) => {
             const flash = item.productId.flashSales || 0;
-            const discountedPrice = Math.round(item.productId.price * (1 - flash / 100));
+            const discountedPrice = Math.round(
+              item.productId.price * (1 - flash / 100)
+            );
 
             return {
               id: item.productId._id,
@@ -33,7 +35,7 @@ const Cart = () => {
 
         setCartItems(fetchedItems);
       } catch (err) {
-        console.error('Lỗi khi fetch cart:', err);
+        console.error("Lỗi khi fetch cart:", err);
       }
     };
 
@@ -49,11 +51,11 @@ const Cart = () => {
   };
 
   const updateCartToServer = async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     try {
       for (const item of cartItems) {
         await axios.put(
-          'http://localhost:3000/api/cart/update',
+          "http://localhost:3000/api/cart/update",
           {
             productId: item.id,
             quantity: item.quantity,
@@ -63,23 +65,23 @@ const Cart = () => {
           }
         );
       }
-      alert('Cart updated successfully.');
+      alert("Cart updated successfully.");
     } catch (err) {
-      console.error('Lỗi khi cập nhật giỏ hàng:', err);
+      console.error("Lỗi khi cập nhật giỏ hàng:", err);
     }
   };
 
   const removeItem = async (id) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     setCartItems((items) => items.filter((item) => item.id !== id));
 
     try {
-      await axios.delete('http://localhost:3000/api/cart/remove', {
+      await axios.delete("http://localhost:3000/api/cart/remove", {
         headers: { Authorization: `Bearer ${token}` },
         data: { productId: id },
       });
     } catch (err) {
-      console.error('Lỗi khi xoá sản phẩm:', err);
+      console.error("Lỗi khi xoá sản phẩm:", err);
     }
   };
 
@@ -88,16 +90,16 @@ const Cart = () => {
   };
 
   const handleApplyCoupon = () => {
-    console.log('Applying coupon:', couponCode);
+    console.log("Applying coupon:", couponCode);
     // TODO: Gửi mã giảm giá đến server và xử lý
   };
 
   const subtotal = calculateSubtotal();
-  const shipping = 'Free';
+  const shipping = "Free";
   const total = subtotal;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 pt-0">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow">
@@ -126,24 +128,31 @@ const Cart = () => {
                     </td>
                     <td className="py-4 px-6">${item.price}</td>
                     <td className="py-4 px-6">
-                      <div className="flex items-center border rounded-md w-24">
+                      <div className="flex items-center border rounded-md overflow-hidden w-20 h-9">
                         <button
-                          className="px-3 py-1"
-                          onClick={() => updateQuantityLocally(item.id, item.quantity - 1)}
+                          className="w-8 h-full text-lg font-semibold flex items-center justify-center hover:bg-gray-100 cursor-pointer"
+                          onClick={() =>
+                            updateQuantityLocally(item.id, item.quantity - 1)
+                          }
                         >
-                          -
+                          –
                         </button>
                         <input
                           type="number"
                           value={item.quantity}
                           onChange={(e) =>
-                            updateQuantityLocally(item.id, parseInt(e.target.value))
+                            updateQuantityLocally(
+                              item.id,
+                              parseInt(e.target.value)
+                            )
                           }
-                          className="w-12 text-center border-x"
+                          className="w-full text-center text-sm border-x outline-none pl-4"
                         />
                         <button
-                          className="px-3 py-1"
-                          onClick={() => updateQuantityLocally(item.id, item.quantity + 1)}
+                          className="w-8 h-full text-lg font-semibold flex items-center justify-center hover:bg-gray-100 cursor-pointer"
+                          onClick={() =>
+                            updateQuantityLocally(item.id, item.quantity + 1)
+                          }
                         >
                           +
                         </button>
@@ -153,9 +162,9 @@ const Cart = () => {
                     <td className="py-4 px-6">
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="text-red-500"
+                        className="text-red-500 cursor-pointer"
                       >
-                        ×
+                        x
                       </button>
                     </td>
                   </tr>
@@ -171,15 +180,15 @@ const Cart = () => {
             >
               Return To Shop
             </Link>
-            <button
+            {/* <button
               onClick={updateCartToServer}
               className="px-6 py-3 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200"
             >
               Update Cart
-            </button>
+            </button> */}
           </div>
 
-          <div className="mt-6">
+          {/* <div className="mt-6">
             <div className="flex gap-4">
               <input
                 type="text"
@@ -195,7 +204,7 @@ const Cart = () => {
                 Apply Coupon
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="lg:col-span-1">
@@ -216,8 +225,8 @@ const Cart = () => {
               </div>
 
               <button
-                onClick={() => navigate('/checkout')}
-                className="w-full py-3 bg-red-500 text-white rounded-md hover:bg-red-600 mt-4"
+                onClick={() => navigate("/checkout")}
+                className="w-full py-3 bg-red-500 text-white rounded-md hover:bg-red-600 mt-4 cursor-pointer"
               >
                 Proceed to checkout
               </button>
